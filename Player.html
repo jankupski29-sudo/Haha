@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Player</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+<video id="video" autoplay muted loop playsinline>
+  <source src="film.mp4" type="video/mp4">
+</video>
+
+<script>
+  const video = document.getElementById("video");
+
+  // próba fullscreen (działa po tapnięciu)
+  document.addEventListener("touchstart", () => {
+    document.documentElement.requestFullscreen?.();
+    video.play();
+  });
+
+  // blok cofania
+  history.pushState(null, "", location.href);
+  window.onpopstate = () => {
+    history.pushState(null, "", location.href);
+  };
+
+  // ostrzeżenie przy zamknięciu
+  window.addEventListener("beforeunload", e => {
+    e.preventDefault();
+    e.returnValue = "";
+  });
+
+  // jeśli strona wróci z tła → reload
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      location.reload();
+    }
+  });
+
+  // watchdog – jak video stanie, odpal od nowa
+  setInterval(() => {
+    if (video.paused) video.play();
+  }, 1000);
+</script>
+
+</body>
+</html>
